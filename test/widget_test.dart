@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:newscan/main.dart';
-import 'package:newscan/service/manga_cache_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Créer une instance de SharedPreferences en mémoire pour le test
-    final prefs = await SharedPreferences.getInstance();
-    final cacheService = MangaCacheService(prefs);
-
-    // Construire notre app avec le cacheService simulé
-    await tester.pumpWidget(MyApp(cacheService: cacheService));
+    // Construire l'application sans dépendances de cache
+    await tester.pumpWidget(MyApp()); // Passer `null` ou une version simplifiée de cacheService
 
     // Vérifier l'initialisation et l'interaction avec l'UI
     expect(find.text('0'), findsOneWidget);

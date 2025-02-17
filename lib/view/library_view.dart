@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:newscan/model/manga.dart';
-import 'package:newscan/service/manga_cache_service.dart';
 import 'package:newscan/service/manga_service.dart';
 import 'package:newscan/widget/manga_card.dart';
-
 import '../data/constant.dart';
 
 class LibraryView extends StatefulWidget {
-  final MangaCacheService cacheService;
-  const LibraryView({super.key, required this.cacheService});
+  const LibraryView({super.key});
 
   @override
   State<LibraryView> createState() => _LibraryViewState();
@@ -19,6 +16,7 @@ class _LibraryViewState extends State<LibraryView> {
   List<Manga> latestMangas = [];
   List<Manga> martialArtsMangas = [];
   List<Manga> fantasyMangas = [];
+  List<Manga> adventureMangas = [];
   String? error;
   bool _isMounted = false;
 
@@ -26,7 +24,7 @@ class _LibraryViewState extends State<LibraryView> {
   void initState() {
     super.initState();
     _isMounted = true;
-    mangaService = MangaService(widget.cacheService);
+    mangaService = MangaService();
     _loadMangas();
   }
 
@@ -39,14 +37,16 @@ class _LibraryViewState extends State<LibraryView> {
   Future<void> _loadMangas() async {
     try {
       final latest = await mangaService.fetchLatestUploadedManga();
-      final martialArts = await mangaService.fetchMangasByCategory(kMartialArtsMangaCategoryUrl); // URL directe
-      final fantasy = await mangaService.fetchMangasByCategory(kFantasyMangaCategoryUrl); // URL directe
+      final martialArts = await mangaService.fetchMangasByCategory(kMartialArtsMangaCategoryUrl);
+      final fantasy = await mangaService.fetchMangasByCategory(kFantasyMangaCategoryUrl);
+      final adventure = await mangaService.fetchMangasByCategory(kAdventureMangaCategoryUrl);
 
       if (_isMounted) {
         setState(() {
           latestMangas = latest;
           martialArtsMangas = martialArts;
           fantasyMangas = fantasy;
+          adventureMangas =adventure;
         });
       }
     } catch (e) {
@@ -75,6 +75,9 @@ class _LibraryViewState extends State<LibraryView> {
 
           // Fantasy Section
           _buildSection('Fantasy', fantasyMangas),
+
+          // Adventure Section
+          _buildSection('Adventure', adventureMangas)
         ],
       ),
     );
@@ -94,10 +97,9 @@ class _LibraryViewState extends State<LibraryView> {
               child: Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(kTitleColor),
-
                 ),
               ),
             ),
@@ -120,4 +122,3 @@ class _LibraryViewState extends State<LibraryView> {
     );
   }
 }
-

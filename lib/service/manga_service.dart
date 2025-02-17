@@ -2,12 +2,9 @@ import 'dart:convert';
 import 'package:newscan/data/constant.dart';
 import 'package:newscan/model/manga.dart';
 import 'package:http/http.dart' as http;
-import 'package:newscan/service/manga_cache_service.dart';
 
 class MangaService {
-  final MangaCacheService cacheService;
-
-  MangaService(this.cacheService);
+  MangaService();
 
   Future<String> _kfetchMangaCover(String mangaId) async {
     final response = await http.get(Uri.parse('https://api.mangadex.org/cover?manga[]=$mangaId'));
@@ -33,37 +30,65 @@ class MangaService {
     }
   }
 
-  Future<Manga> fetchMangaDetails(String mangaId) async{
+  Future<Manga> fetchMangaDetails(String mangaId) async {
     final response = await http.get(Uri.parse("$kMangaByIdUrl/$mangaId"));
 
-    if(response.statusCode ==200){
+    // Affiche la réponse complète du serveur
+    print('Response Status: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
       final decodedJson = jsonDecode(response.body);
       final mangaData = decodedJson['data'];
 
-      String id = mangaData['id'];
+      final titleMap = mangaData['attributes']['title'];
+      final title = titleMap is Map && titleMap.isNotEmpty
+          ? titleMap.entries.first.value.toString()
+          : 'Titre Inconnu';
+
+      // Affiche le titre
+      print("Title: $title");
+
+      // Récupérer la description en anglais ou une valeur par défaut
+      final descriptionMap = mangaData['attributes']['description'];
+      final description = descriptionMap != null && descriptionMap is Map
+          ? descriptionMap['en'] ?? 'Description indisponible'
+          : 'Description indisponible';
+
+      // Affiche la description
+      print("Description: $description");
+
       final mangaAttributes = mangaData['attributes'];
-      String title = mangaAttributes['title']['en'];
-      String description = mangaAttributes['description']['en'];
+
       String status = mangaAttributes['status'];
-      String year = mangaAttributes['year'];
-      final imageUrl = await _kfetchMangaCover(id);
+      int year = mangaAttributes['year'];
 
-      Manga manga = Manga(id: id, title: title, description: description, status: status, year: year, imageUrl: imageUrl);
+      // Affiche le statut et l'année
+      print("Status: $status");
+      print("Year: $year");
+
+      final imageUrl = await _kfetchMangaCover(mangaId);
+
+      // Affiche l'URL de l'image
+      print("Image URL: $imageUrl");
+
+      // Retourne le Manga
+      Manga manga = Manga(
+        id: mangaId,
+        title: title,
+        description: description,
+        status: status,
+        year: year,
+        imageUrl: imageUrl,
+      );
       return manga;
-
     } else {
       throw Exception("Erreur lors de la récupération du manga: $mangaId");
     }
   }
-  
-  Future<List<Manga>> fetchLatestUploadedManga() async {
-    if (cacheService.isCacheValid()) {
-      final cachedMangas = cacheService.getMangas();
-      if (cachedMangas != null && cachedMangas.isNotEmpty) {
-        return cachedMangas;
-      }
-    }
 
+
+  Future<List<Manga>> fetchLatestUploadedManga() async {
     final response = await http.get(Uri.parse(kLatestUploadsUrl));
 
     if (response.statusCode == 200) {
@@ -72,22 +97,10 @@ class MangaService {
 
       List<Manga> mangas = await Future.wait(mangasData.map((mangaData) async {
         final id = mangaData['id'];
-        final titleMap = mangaData['attributes']['title'];
-        final title = titleMap is Map && titleMap.isNotEmpty
-            ? titleMap.entries.first.value.toString()
-            : 'Titre Inconnu';
-
-        // Récupérer la description en anglais ou une valeur par défaut
-        final descriptionMap = mangaData['attributes']['description'];
-        final description = descriptionMap != null && descriptionMap is Map
-            ? descriptionMap['en'] ?? 'Description indisponible'
-            : 'Description indisponible';
-
         final imageUrl = await _kfetchMangaCover(id);
-        return Manga(id: id, title: title, description: description, imageUrl: imageUrl);
+        return Manga(id: id, imageUrl: imageUrl);
       }));
 
-      await cacheService.saveMangas(mangas);
       return mangas;
     } else {
       throw Exception("Échec du chargement des mangas (code: ${response.statusCode})");
@@ -103,19 +116,8 @@ class MangaService {
 
       List<Manga> mangas = await Future.wait(mangasData.map((mangaData) async {
         final id = mangaData['id'];
-        final titleMap = mangaData['attributes']['title'];
-        final title = titleMap is Map && titleMap.isNotEmpty
-            ? titleMap.entries.first.value.toString()
-            : 'Titre Inconnu';
-
-        // Récupérer la description en anglais ou une valeur par défaut
-        final descriptionMap = mangaData['attributes']['description'];
-        final description = descriptionMap != null && descriptionMap is Map
-            ? descriptionMap['en'] ?? 'Description indisponible'
-            : 'Description indisponible';
-
         final imageUrl = await _kfetchMangaCover(id);
-        return Manga(id: id, title: title, description: description, imageUrl: imageUrl);
+        return Manga(id: id, imageUrl: imageUrl);
       }));
 
       return mangas;

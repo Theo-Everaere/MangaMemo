@@ -10,7 +10,10 @@ const String kMangaCoverUrl = "https://uploads.mangadex.org/covers/"; // + MANGA
 
 // MANGA MORE DETAILS URLS
 const String kMangaByIdUrl = "https://api.mangadex.org/manga"; // + MANGA ID
-const String kChaptersByMangaIdUrl = "https://api.mangadex.org/chapter?manga="; // + MANGA ID
+const String kChaptersByMangaIdUrl = "https://api.mangadex.org/chapter?manga"; // + =MANGA ID
+
+// READ MANGA URL
+const String kReadChapterUrl = "https://api.mangadex.org/at-home/server"; // +  ChapterID
 
 // SEARCH BY TITLE URL
 const String kSearchMangaByTitleUrl = "http://api.mangadex.org/manga?title="; // + TITLE

@@ -14,7 +14,7 @@ class MangaCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MangaDetailsView(manga: manga),
+            builder: (context) => MangaDetailsView(mangaId: manga.id.toString()),
           ),
         );
       },
@@ -26,21 +26,17 @@ class MangaCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5),
-          child: Stack(
-            children: [
-              Image.network(
-                manga.imageUrl,
-                width: 100,
-                height: 150,
-                fit: BoxFit.cover,
-                errorBuilder:
-                    (context, error, stackTrace) => const Icon(
-                      Icons.image_not_supported,
-                      size: 100,
-                      color: Colors.grey,
-                    ),
-              ),
-            ],
+          child: Image.network(
+            manga.imageUrl,
+            width: 100,
+            height: 150,
+            fit: BoxFit.cover,
+            errorBuilder:
+                (context, error, stackTrace) => const Icon(
+                  Icons.image_not_supported,
+                  size: 100,
+                  color: Colors.grey,
+                ),
           ),
         ),
       ),

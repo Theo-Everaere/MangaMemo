@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:newscan/data/constant.dart';
-import 'package:newscan/service/manga_cache_service.dart';
 import 'package:newscan/view/favorites_view.dart';
 import 'package:newscan/view/library_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:newscan/view/search_view.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final cacheService = MangaCacheService(prefs);
-
-  runApp(MyApp(cacheService: cacheService));
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final MangaCacheService cacheService;
-
-  const MyApp({super.key, required this.cacheService});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Manga App',
+      title: 'MangaMemo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: MyHomePage(cacheService: cacheService),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final MangaCacheService cacheService;
-
-  const MyHomePage({super.key, required this.cacheService});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -42,15 +34,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  // Déclare _views sans initialisation
   late final List<Widget> _views;
 
   @override
   void initState() {
     super.initState();
-    // Initialiser _views avec cacheService dans initState
     _views = [
-      LibraryView(cacheService: widget.cacheService),
+      const LibraryView(),
+      const SearchView(),
       const FavoritesView(),
     ];
   }
@@ -78,6 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_rounded),
             label: 'Library',
+          ),BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
@@ -88,4 +82,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
