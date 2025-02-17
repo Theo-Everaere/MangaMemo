@@ -1,8 +1,9 @@
 // CATEGORIES URLS
 const String kLatestUploadsUrl = "https://api.mangadex.org/manga?order[latestUploadedChapter]=desc&limit=10";
-const String kMartialArtsMangaCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=799c202e-7daa-44eb-9cf7-8a3c0441531e&limit=10";
-const String kFantasyMangaCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=cdc58593-87dd-415e-bbc0-2ec27bf404cc&limit=10";
-const String kAdventureMangaCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=87cc87cd-a395-47af-b27a-93258283bbc6&limit=10";
+const String kMartialArtsCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=799c202e-7daa-44eb-9cf7-8a3c0441531e&limit=10";
+const String kFantasyCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=cdc58593-87dd-415e-bbc0-2ec27bf404cc&limit=10";
+const String kAdventureCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=87cc87cd-a395-47af-b27a-93258283bbc6&limit=10";
+const String kFullColorCategoryUrl = "https://api.mangadex.org/manga?includedTags[]=f5ba408b-0e7a-484d-8d49-4e9125ac96de&limit=10";
 
 // COVER ARTS URLS
 const String kFilenameByMangaIdUrl = "https://api.mangadex.org/cover?manga[]="; // + MANGA ID

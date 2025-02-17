@@ -12,23 +12,24 @@ class MangaDetailsView extends StatefulWidget {
   _MangaDetailsViewState createState() => _MangaDetailsViewState();
 }
 
-class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerProviderStateMixin {
+class _MangaDetailsViewState extends State<MangaDetailsView>
+    with SingleTickerProviderStateMixin {
   late MangaService mangaService;
   bool _isExpanded = false;
   late Future<Manga> _mangaFuture;
-  late TabController _tabController; // TabController pour gérer les onglets
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     mangaService = MangaService();
     _mangaFuture = mangaService.fetchMangaDetails(widget.mangaId);
-    _tabController = TabController(length: 2, vsync: this); // Deux onglets : About et Chapters
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose(); // N'oublie pas de disposer du TabController
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -45,10 +46,7 @@ class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerPr
         backgroundColor: Color(kMainBgColor),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Overview'),
-            Tab(text: 'Chapters'),
-          ],
+          tabs: const [Tab(text: 'Overview'), Tab(text: 'Chapters')],
           indicatorColor: Color(kAccentColor),
           labelColor: Color(kAccentColor),
           unselectedLabelColor: Color(kTextColor),
@@ -58,7 +56,9 @@ class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerPr
         future: _mangaFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator(color: Color(kTitleColor)));
+            return const Center(
+              child: CircularProgressIndicator(color: Color(kTitleColor)),
+            );
           } else if (snapshot.hasError) {
             return Center(child: Text('Erreur: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
@@ -70,7 +70,7 @@ class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerPr
           return TabBarView(
             controller: _tabController,
             children: [
-              // Onglet "About"
+              // TAB "Details"
               SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -105,7 +105,10 @@ class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerPr
                             : manga.description.length > 100
                             ? manga.description.substring(0, 100) + '...'
                             : manga.description,
-                        style: TextStyle(fontSize: 16, color: Color(kTextColor)),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(kTextColor),
+                        ),
                         textAlign: TextAlign.justify,
                       ),
                       const SizedBox(height: 10),
@@ -163,14 +166,12 @@ class _MangaDetailsViewState extends State<MangaDetailsView> with SingleTickerPr
                   ),
                 ),
               ),
-              // Onglet "Chapters" - Remplace par le contenu approprié pour les chapitres
+              // TAB "Chapters"
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Tu peux ici ajouter le contenu relatif aux chapitres du manga
-                    ChaptersCard(mangaId: manga.id,),                  ],
+                  children: [ChaptersCard(mangaId: manga.id)],
                 ),
               ),
             ],

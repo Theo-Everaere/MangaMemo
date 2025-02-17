@@ -14,7 +14,10 @@ class MangaCacheService {
   Future<void> saveMangas(List<Manga> mangas) async {
     final encodedMangas = jsonEncode(mangas.map((m) => m.toJson()).toList());
     await prefs.setString(cacheKey, encodedMangas);
-    await prefs.setInt(cacheTimestampKey, DateTime.now().millisecondsSinceEpoch);
+    await prefs.setInt(
+      cacheTimestampKey,
+      DateTime.now().millisecondsSinceEpoch,
+    );
   }
 
   // Charger les mangas depuis le cache

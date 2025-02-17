@@ -16,9 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MangaMemo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true),
       home: const MyHomePage(),
     );
   }
@@ -39,11 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _views = [
-      const LibraryView(),
-      const SearchView(),
-      const FavoritesView(),
-    ];
+    _views = [const LibraryView(), const SearchView(), const FavoritesView()];
   }
 
   void _onItemTapped(int index) {
@@ -56,9 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(kMainBgColor),
-      body: SafeArea(
-        child: _views[_selectedIndex],
-      ),
+      body: SafeArea(child: _views[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(kBottomNavColor),
         fixedColor: const Color(kIconActiveColor),
@@ -69,10 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_rounded),
             label: 'Library',
-          ),BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorites',

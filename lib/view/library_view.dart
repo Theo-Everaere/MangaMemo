@@ -16,7 +16,7 @@ class _LibraryViewState extends State<LibraryView> {
   List<Manga> latestMangas = [];
   List<Manga> martialArtsMangas = [];
   List<Manga> fantasyMangas = [];
-  List<Manga> adventureMangas = [];
+  List<Manga> fullColorMangas = [];
   String? error;
   bool _isMounted = false;
 
@@ -37,16 +37,22 @@ class _LibraryViewState extends State<LibraryView> {
   Future<void> _loadMangas() async {
     try {
       final latest = await mangaService.fetchLatestUploadedManga();
-      final martialArts = await mangaService.fetchMangasByCategory(kMartialArtsMangaCategoryUrl);
-      final fantasy = await mangaService.fetchMangasByCategory(kFantasyMangaCategoryUrl);
-      final adventure = await mangaService.fetchMangasByCategory(kAdventureMangaCategoryUrl);
+      final martialArts = await mangaService.fetchMangasByCategory(
+        kMartialArtsCategoryUrl,
+      );
+      final fantasy = await mangaService.fetchMangasByCategory(
+        kFantasyCategoryUrl,
+      );
+      final fullColor = await mangaService.fetchMangasByCategory(
+        kFullColorCategoryUrl,
+      );
 
       if (_isMounted) {
         setState(() {
           latestMangas = latest;
           martialArtsMangas = martialArts;
           fantasyMangas = fantasy;
-          adventureMangas =adventure;
+          fullColorMangas = fullColor;
         });
       }
     } catch (e) {
@@ -62,63 +68,67 @@ class _LibraryViewState extends State<LibraryView> {
       return Center(child: Text('Erreur: $error'));
     }
 
-    return latestMangas.isEmpty && martialArtsMangas.isEmpty && fantasyMangas.isEmpty
-        ? const Center(child: CircularProgressIndicator(color: Color(kTitleColor),),)
+    return latestMangas.isEmpty &&
+            martialArtsMangas.isEmpty &&
+            fantasyMangas.isEmpty
+        ? const Center(
+          child: CircularProgressIndicator(color: Color(kTitleColor)),
+        )
         : SingleChildScrollView(
-      child: Column(
-        children: [
-          // Latest Section
-          _buildSection('Latest', latestMangas),
+          child: Column(
+            children: [
+              // Latest Section
+              _buildSection('Latest', latestMangas),
 
-          // Martial Arts Section
-          _buildSection('Martial Arts', martialArtsMangas),
+              // Martial Arts Section
+              _buildSection('Martial Arts', martialArtsMangas),
 
-          // Fantasy Section
-          _buildSection('Fantasy', fantasyMangas),
+              // Fantasy Section
+              _buildSection('Fantasy', fantasyMangas),
 
-          // Adventure Section
-          _buildSection('Adventure', adventureMangas)
-        ],
-      ),
-    );
+              // Full Color Section
+              _buildSection('Full Color', fullColorMangas),
+            ],
+          ),
+        );
   }
 
   Widget _buildSection(String title, List<Manga> mangas) {
     return mangas.isEmpty
         ? const SizedBox.shrink()
         : Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(kTitleColor),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(kTitleColor),
+                    ),
+                  ),
                 ),
               ),
-            ),
+              SizedBox(
+                height: 150,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: mangas.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(right: 4.0),
+                      child: MangaCard(manga: mangas[index]),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            height: 150,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: mangas.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 4.0),
-                  child: MangaCard(manga: mangas[index]),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+        );
   }
 }
