@@ -26,3 +26,20 @@ The app supports browsing mangas by categories, allowing users to discover new m
 
 ## API Integration
 - The app integrates with the **MangaDex API** to fetch manga details and cover images.
+
+PREVIEW :
+LIBRARY VIEW
+![home](https://github.com/user-attachments/assets/6d578786-4dfa-4fa9-be16-6d4d4944be02)
+
+SEARCH VIEW
+![search](https://github.com/user-attachments/assets/f12c29d6-abf5-4f4e-93d8-9d4fd9bf0bb1)
+
+DETAILS VIEW 
+![details](https://github.com/user-attachments/assets/4d9f5d7c-b6df-46df-878c-bfa2eb49b1ec)
+
+CHAPTERS VIEW
+![chapters](https://github.com/user-attachments/assets/733e78bd-c204-42c8-a4b7-7a39f638a272)
+ VIEW
+
+
+
