@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newscan/data/constant.dart';
+import 'package:newscan/service/favorites_service.dart';
 import 'package:newscan/service/manga_service.dart';
 import 'package:newscan/model/manga.dart';
 import 'package:newscan/widget/chapters_card.dart';
@@ -15,6 +16,7 @@ class MangaDetailsView extends StatefulWidget {
 class _MangaDetailsViewState extends State<MangaDetailsView>
     with SingleTickerProviderStateMixin {
   late MangaService mangaService;
+  late FavoritesService favoritesService;
   bool _isExpanded = false;
   late Future<Manga> _mangaFuture;
   late TabController _tabController;
@@ -23,8 +25,21 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
   void initState() {
     super.initState();
     mangaService = MangaService();
+    favoritesService = FavoritesService();
     _mangaFuture = mangaService.fetchMangaDetails(widget.mangaId);
     _tabController = TabController(length: 2, vsync: this);
+  }
+
+  Future<void> _toggleFavorites() async {
+    final bool currentStatus = await favoritesService.isFavorite(
+      widget.mangaId,
+    );
+    if (currentStatus) {
+      await favoritesService.removeFromFavorites(widget.mangaId);
+    } else {
+      await favoritesService.addToFavorites(widget.mangaId);
+    }
+    setState(() {});
   }
 
   @override
@@ -60,9 +75,9 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
               child: CircularProgressIndicator(color: Color(kTitleColor)),
             );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Erreur: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return const Center(child: Text('Aucun manga trouvé.'));
+            return const Center(child: Text('No manga found.'));
           }
 
           final manga = snapshot.data!;
@@ -88,6 +103,51 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                             child: Image.network(manga.imageUrl),
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Padding(
+                            padding: const EdgeInsets.only(
+                              top: 15,
+                              bottom: 15
+                            ),
+                            child: Text('Favorite Status  : ', style: TextStyle(
+                                fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(kTextColor),
+                            ),),
+                          ),
+                          GestureDetector(
+                            onTap: _toggleFavorites,
+                            child: FutureBuilder<bool>(
+                              future: favoritesService.isFavorite(
+                                widget.mangaId,
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return CircularProgressIndicator(
+                                    color: Color(kTitleColor),
+                                  );
+                                }
+                                if (snapshot.hasError || !snapshot.hasData) {
+                                  return Icon(
+                                    Icons.favorite_outline,
+                                    color: Color(kWhiteColor),
+                                  );
+                                }
+                                final isFavorite = snapshot.data!;
+                                return isFavorite
+                                    ? Icon(Icons.favorite, color: Colors.red)
+                                    : Icon(
+                                      Icons.favorite,
+                                      color: Color(kWhiteColor),
+                                    );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Text(

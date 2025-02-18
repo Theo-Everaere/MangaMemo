@@ -28,7 +28,9 @@ class _ReadMangaState extends State<ReadManga> {
         future: pages,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(color: Color(kTitleColor)),
+            );
           }
 
           if (snapshot.hasError) {
@@ -41,12 +43,29 @@ class _ReadMangaState extends State<ReadManga> {
 
           final List<String> pagesList = snapshot.data!;
 
-          return SafeArea(
-            child: ListView.builder(
-              itemCount: pagesList.length,
-              itemBuilder: (context, index) {
-                return Image.network(pagesList[index], fit: BoxFit.contain);
-              },
+          return SingleChildScrollView(
+            child: Column(
+              children: pagesList.map((url) {
+                return Image.network(
+                  url,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child;  // Image loaded
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                          color: Color(kTitleColor),
+                        ),
+                      );
+                    }
+                  },
+                );
+              }).toList(),
             ),
           );
         },

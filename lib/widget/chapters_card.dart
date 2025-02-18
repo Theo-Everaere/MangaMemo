@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:newscan/data/constant.dart';
 import 'package:newscan/model/chapter.dart';
+import 'package:newscan/service/chapters_read_service.dart';
 import 'package:newscan/service/chapters_service.dart';
-import 'package:newscan/view/read_manga.dart';
+import 'package:newscan/view/read_manga_view.dart';
 
 class ChaptersCard extends StatefulWidget {
   final String mangaId;
@@ -13,21 +14,37 @@ class ChaptersCard extends StatefulWidget {
 }
 
 class _ChaptersCardState extends State<ChaptersCard> {
-  late ChaptersService chaptersService;
+  late final ChaptersService chaptersService;
+  late final ChaptersReadService chaptersReadService;
   late Future<List<Chapter>> _chaptersFuture;
 
   @override
   void initState() {
     super.initState();
     chaptersService = ChaptersService();
+    chaptersReadService = ChaptersReadService();
     _chaptersFuture = _fetchChapters(widget.mangaId);
   }
 
   Future<List<Chapter>> _fetchChapters(String mangaId) async {
     try {
-      return await chaptersService.fetchChapters(mangaId);
+      final chaptersList = await chaptersService.fetchChapters(mangaId);
+      if (chaptersList.isEmpty) {
+        throw Exception("No chapters found.");
+      }
+      return chaptersList;
     } catch (e) {
-      throw Exception("Error fetching chapters: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> _toggleAsRead(String chapterId) async {
+    final bool currentStatus = await chaptersReadService.isChapterRead(chapterId);
+
+    if (currentStatus) {
+      await chaptersReadService.removeChapterAsRead(chapterId);
+    } else {
+      await chaptersReadService.markChapterAsRead(chapterId);
     }
   }
 
@@ -38,19 +55,28 @@ class _ChaptersCardState extends State<ChaptersCard> {
         future: _chaptersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
+            return const Center(
+              child: CircularProgressIndicator(color: Color(kTitleColor)),
+            );
+          }
+
+          if (snapshot.hasError) {
             return Center(
               child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(color: Color(kWhiteColor)),
+                "Failed to load chapters: ${snapshot.error}",
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          }
+
+          if (snapshot.hasData && snapshot.data!.isEmpty) {
             return const Center(
               child: Text(
                 'No chapters available.',
-                style: TextStyle(color: Color(kWhiteColor)),
+                style: TextStyle(color: Color(kTitleColor)),
               ),
             );
           }
@@ -60,6 +86,12 @@ class _ChaptersCardState extends State<ChaptersCard> {
             itemCount: chapters.length,
             itemBuilder: (context, index) {
               final chapter = chapters[index];
+              final ValueNotifier<bool> isChapterReadNotifier = ValueNotifier<bool>(false);
+
+              chaptersReadService.isChapterRead(chapter.id).then((isRead) {
+                isChapterReadNotifier.value = isRead;
+              });
+
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -71,34 +103,63 @@ class _ChaptersCardState extends State<ChaptersCard> {
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(
-                    vertical: 5,
+                    vertical: 6,
                     horizontal: 10,
                   ),
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: const Color(kAccentColor),
+                    color: const Color(kBottomNavColor),
                     borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Volume: ${chapter.volume} / Chapter: ${chapter.chapter}',
-                            style: const TextStyle(color: Color(kTextColor)),
-                          ),
-                          Expanded(child: Container()),
-                          Icon(Icons.check, color: Color(kTextColor)),
-                        ],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 5,
+                        offset: const Offset(2, 2),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text(
-                            chapter.title,
-                            style: const TextStyle(color: Color(kTextColor)),
-                          ),
-                        ],
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              chapter.title.isNotEmpty
+                                  ? chapter.title
+                                  : 'No title available',
+                              style: const TextStyle(
+                                color: Color(kTitleColor),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Vol. ${chapter.volume} - Ch. ${chapter.chapter}',
+                              style: const TextStyle(
+                                color: Color(kTitleColor),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isChapterReadNotifier,
+                        builder: (context, isRead, child) {
+                          return GestureDetector(
+                            onTap: () async {
+                              await _toggleAsRead(chapter.id);
+                              isChapterReadNotifier.value = !isRead;
+                            },
+                            child: isRead
+                                ? Icon(Icons.check_circle, color: Colors.green)
+                                : Icon(Icons.radio_button_unchecked, color: Colors.white),
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -5,7 +5,7 @@ import 'package:newscan/model/manga.dart';
 import 'package:http/http.dart' as http;
 
 class SearchService {
-  Future<Manga> searchMangaByTitle(String enteredTitle) async {
+  Future<List<Manga>> searchMangaByTitle(String enteredTitle) async {
     final encodedTitle = Uri.encodeComponent(enteredTitle);
     final response = await http.get(
       Uri.parse(kSearchMangaByTitleUrl + encodedTitle),
@@ -20,12 +20,19 @@ class SearchService {
           throw Exception('No manga found for this title');
         }
 
-        String id = mandaData[0]['id'];
-        String title = mandaData[0]['attributes']['title']['en'];
-        String imageUrl = await _fetchMangaCover(id);
+        List<Manga> mangas = [];
 
-        Manga manga = Manga(id: id, title: title, imageUrl: imageUrl);
-        return manga;
+        for (var mangaData in mandaData) {
+          String title = mangaData['attributes']['title']['en'] ?? 'Unknown Title';
+
+          String id = mangaData['id'] ?? '';
+          String imageUrl = await _fetchMangaCover(id) ?? '';
+
+          Manga manga = Manga(id: id, title: title, imageUrl: imageUrl);
+          mangas.add(manga);
+        }
+
+        return mangas;
       } catch (e) {
         throw Exception('Error while parsing manga data: $e');
       }
@@ -36,7 +43,7 @@ class SearchService {
     }
   }
 
-  Future<String> _fetchMangaCover(String mangaId) async {
+  Future<String?> _fetchMangaCover(String mangaId) async {
     final response = await http.get(
       Uri.parse('https://api.mangadex.org/cover?manga[]=$mangaId'),
     );
@@ -47,7 +54,7 @@ class SearchService {
         final mangaData = decodedJson['data'] as List;
 
         if (mangaData.isEmpty) {
-          throw Exception("No cover data found for manga ID: $mangaId");
+          return '';
         }
 
         final fileName = mangaData.first['attributes']['fileName'];

@@ -3,6 +3,7 @@ import 'package:newscan/data/constant.dart';
 import 'package:newscan/model/manga.dart';
 import 'package:newscan/service/search_service.dart';
 import 'package:newscan/view/manga_details_view.dart';
+import 'package:newscan/widget/search_result_card.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -13,7 +14,7 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   final TextEditingController _controller = TextEditingController();
-  List<Manga> _searchResults = [];
+  Future<List<Manga>> _searchResults = Future.value([]);
   bool _isLoading = false;
 
   void _searchManga() async {
@@ -23,16 +24,10 @@ class _SearchViewState extends State<SearchView> {
 
     try {
       final service = SearchService();
-      final result = await service.searchMangaByTitle(_controller.text);
-      setState(() {
-        _searchResults = [result];
-        _isLoading = false;
-      });
+      _searchResults = service.searchMangaByTitle(_controller.text);
+      setState(() => _isLoading = false);
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      // Handle error
+      setState(() => _isLoading = false);
       print('Search error: $e');
     }
   }
@@ -76,79 +71,58 @@ class _SearchViewState extends State<SearchView> {
             if (_isLoading)
               const CircularProgressIndicator(color: Color(kTitleColor)),
             Expanded(
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: _searchResults.length,
-                  itemBuilder: (context, index) {
-                    final manga = _searchResults[index];
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) =>
-                                    MangaDetailsView(mangaId: manga.id),
-                          ),
-                        );
-                      },
-                      child: Center(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 3),
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(7),
-                                child: Image.network(
-                                  manga.imageUrl,
-                                  width: 280,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.5,
-                                  fit: BoxFit.cover,
-                                  errorBuilder:
-                                      (context, error, stackTrace) =>
-                                          const Icon(
-                                            Icons.image_not_supported,
-                                            size: 100,
-                                            color: Colors.grey,
-                                          ),
-                                ),
-                              ),
-                              Container(
-                                width: 280,
-                                color: Color(kWhiteColor),
-                                padding: const EdgeInsets.all(6),
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    manga.title,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(kTitleColor),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+              child: FutureBuilder<List<Manga>>(
+                future: _searchResults,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Color(kTitleColor)),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "No manga found for this title, please try again.",
+                        style: const TextStyle(color: Color(kTitleColor)),
                       ),
                     );
-                  },
-                ),
+                  }
+
+                  final mangas = snapshot.data ?? [];
+
+                  if (mangas.isEmpty) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Enter manga title',
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Color(kTitleColor)),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(Icons.arrow_upward, color: Color(kTitleColor),)
+                      ],
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: mangas.length,
+                    itemBuilder: (context, index) {
+                      final manga = mangas[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MangaDetailsView(mangaId: manga.id),
+                            ),
+                          );
+                        },
+                        child: SearchResultCard(manga: manga),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -157,3 +131,4 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 }
+

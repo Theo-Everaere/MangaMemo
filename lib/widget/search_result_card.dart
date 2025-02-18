@@ -2,29 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:newscan/data/constant.dart';
 import 'package:newscan/model/manga.dart';
 import 'package:newscan/service/favorites_service.dart';
-import 'package:newscan/view/manga_details_view.dart';
 
-class MangaCard extends StatefulWidget {
+class SearchResultCard extends StatefulWidget {
   final Manga manga;
-
-  const MangaCard({super.key, required this.manga});
+  const SearchResultCard({super.key, required this.manga});
 
   @override
-  State<MangaCard> createState() => _MangaCardState();
+  State<SearchResultCard> createState() => _SearchResultCardState();
 }
 
-class _MangaCardState extends State<MangaCard> {
+class _SearchResultCardState extends State<SearchResultCard> {
   late FavoritesService favoritesService;
 
   @override
   void initState() {
-    super.initState();
     favoritesService = FavoritesService();
+    super.initState();
   }
 
-  // Fonction pour changer le statut des favoris
   Future<void> _toggleFavorite() async {
-    final bool currentStatus = await favoritesService.isFavorite(widget.manga.id);
+    final bool currentStatus = await favoritesService.isFavorite(
+      widget.manga.id,
+    );
 
     if (currentStatus) {
       await favoritesService.removeFromFavorites(widget.manga.id);
@@ -32,47 +31,64 @@ class _MangaCardState extends State<MangaCard> {
       await favoritesService.addToFavorites(widget.manga.id);
     }
 
-    // Après avoir ajouté ou retiré, rafraîchir l'interface
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MangaDetailsView(mangaId: widget.manga.id),
-          ),
-        );
-      },
+    return Center(
       child: Stack(
         children: [
           Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white, width: 2),
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5),
-              child: Image.network(
-                widget.manga.imageUrl,
-                width: 100,
-                height: 150,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(
-                  Icons.image_not_supported,
-                  size: 100,
-                  color: Colors.grey,
+              border: Border.all(color: Colors.white, width: 3),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 5,
+                  offset: const Offset(0, 3),
                 ),
-              ),
+              ],
+            ),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: Image.network(
+                    widget.manga.imageUrl,
+                    width: 280,
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    fit: BoxFit.cover,
+                    errorBuilder:
+                        (context, error, stackTrace) => const Icon(
+                          Icons.image_not_supported,
+                          size: 100,
+                          color: Colors.grey,
+                        ),
+                  ),
+                ),
+                Container(
+                  width: 280,
+                  color: Color(kWhiteColor),
+                  padding: const EdgeInsets.all(6),
+                  child: Text(
+                    widget.manga.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(kTitleColor),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
-            top: 2,
-            right: 2,
+            top: 10,
+            right: 0,
             child: Container(
               decoration: BoxDecoration(
                 color: Color(kTitleColor),
@@ -86,7 +102,7 @@ class _MangaCardState extends State<MangaCard> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(12),
                 child: GestureDetector(
                   onTap: _toggleFavorite, // Lorsque l'icône est tapée, basculer les favoris
                   child: FutureBuilder<bool>(
@@ -94,7 +110,7 @@ class _MangaCardState extends State<MangaCard> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator(
-                          color: Colors.white,
+                          color: Color(kTitleColor),
                         );
                       }
 
