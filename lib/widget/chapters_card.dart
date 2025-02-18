@@ -155,9 +155,12 @@ class _ChaptersCardState extends State<ChaptersCard> {
                               await _toggleAsRead(chapter.id);
                               isChapterReadNotifier.value = !isRead;
                             },
-                            child: isRead
-                                ? Icon(Icons.check_circle, color: Colors.green)
-                                : Icon(Icons.radio_button_unchecked, color: Colors.white),
+                            child: AnimatedSwitcher(
+                              duration: Duration(milliseconds: 300),
+                              child: isRead
+                                  ? Icon(Icons.bookmark, color: Colors.green, key: ValueKey("read"), size: 32)
+                                  : Icon(Icons.bookmark_border, color: Color(kTextColor), key: ValueKey("unread"), size: 32),
+                            ),
                           );
                         },
                       ),
