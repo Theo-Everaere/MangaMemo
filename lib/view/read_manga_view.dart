@@ -34,11 +34,11 @@ class _ReadMangaState extends State<ReadManga> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: Color(kTitleColor)),));
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No pages available.'));
+            return const Center(child: Text('No pages available.', style: TextStyle(color: Color(kTitleColor)),));
           }
 
           final List<String> pagesList = snapshot.data!;
@@ -51,7 +51,7 @@ class _ReadMangaState extends State<ReadManga> {
                   fit: BoxFit.contain,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) {
-                      return child;  // Image loaded
+                      return child;
                     } else {
                       return Center(
                         child: CircularProgressIndicator(

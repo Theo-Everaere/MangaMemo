@@ -248,23 +248,26 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          _isReversed ? "Latest First: " : "Beginning First: ",
-                          style: const TextStyle(color: Color(kTitleColor), fontSize: 16),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          onPressed: _toggleChaptersOrder,
-                          icon: Icon(
-                            _isReversed ? Icons.arrow_upward_sharp : Icons.arrow_downward_sharp,
-                            color: Color(kTitleColor),
-                            size: 24,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            _isReversed ? "Latest First: " : "Beginning First: ",
+                            style: const TextStyle(color: Color(kTitleColor), fontSize: 16),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          IconButton(
+                            onPressed: _toggleChaptersOrder,
+                            icon: Icon(
+                              _isReversed ? Icons.arrow_upward_sharp : Icons.arrow_downward_sharp,
+                              color: Color(kTitleColor),
+                              size: 24,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     ChaptersCard(mangaId: manga.id, isReversed: _isReversed,)],
                 ),
