@@ -31,7 +31,7 @@ class FavoritesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color(kBottomNavColor),
+      color: const Color(kBottomNavColor),
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: GestureDetector(
@@ -54,13 +54,12 @@ class FavoritesCard extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              // Texte du manga avec un contrôle sur la taille et les débordements
               Expanded(
                 child: Text(
                   manga.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis, // "..."
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color(kTitleColor),
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

@@ -5,7 +5,7 @@ import 'package:newscan/service/chapters_service.dart';
 class ReadManga extends StatefulWidget {
   final String chapterId;
 
-  ReadManga({required this.chapterId});
+  const ReadManga({required this.chapterId});
 
   @override
   _ReadMangaState createState() => _ReadMangaState();
@@ -23,12 +23,12 @@ class _ReadMangaState extends State<ReadManga> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(kMainBgColor),
+      backgroundColor: const Color(kMainBgColor),
       body: FutureBuilder<List<String>>(
         future: pages,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(color: Color(kTitleColor)),
             );
           }
@@ -38,7 +38,7 @@ class _ReadMangaState extends State<ReadManga> {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No pages available.'));
+            return const Center(child: Text('No pages available.'));
           }
 
           final List<String> pagesList = snapshot.data!;
@@ -59,7 +59,7 @@ class _ReadMangaState extends State<ReadManga> {
                               ? loadingProgress.cumulativeBytesLoaded /
                               (loadingProgress.expectedTotalBytes ?? 1)
                               : null,
-                          color: Color(kTitleColor),
+                          color: const Color(kTitleColor),
                         ),
                       );
                     }

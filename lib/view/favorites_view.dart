@@ -42,16 +42,23 @@ class _FavoritesViewState extends State<FavoritesView> {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          Text('My Favorites', style: TextStyle(      fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Color(kTitleColor),)),
+          const Text(
+            'My Favorites',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(kTitleColor),
+            ),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: FutureBuilder<List<Manga>>(
               future: _favoriteMangas,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Color(kTitleColor),));
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(kTitleColor)),
+                  );
                 } else if (snapshot.hasError) {
                   return const Text(
                     "Error loading favorite mangas.",
@@ -76,7 +83,9 @@ class _FavoritesViewState extends State<FavoritesView> {
                         child: FavoritesCard(
                           manga: manga,
                           onDelete: () async {
-                            await favoritesService.removeFromFavorites(manga.id);
+                            await favoritesService.removeFromFavorites(
+                              manga.id,
+                            );
                             setState(() {
                               _favoriteMangas = _loadFavoriteMangas();
                             });

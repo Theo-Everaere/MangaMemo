@@ -63,20 +63,20 @@ class _SearchResultCardState extends State<SearchResultCard> {
                     fit: BoxFit.cover,
                     errorBuilder:
                         (context, error, stackTrace) => const Icon(
-                          Icons.image_not_supported,
-                          size: 100,
-                          color: Colors.grey,
-                        ),
+                      Icons.image_not_supported,
+                      size: 100,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
                 Container(
                   width: 280,
-                  color: Color(kWhiteColor),
+                  color: const Color(kWhiteColor),
                   padding: const EdgeInsets.all(6),
                   child: Text(
                     widget.manga.title,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(kTitleColor),
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -90,7 +90,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
             top: 10,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(kTitleColor),
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(8),
@@ -104,7 +104,7 @@ class _SearchResultCardState extends State<SearchResultCard> {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: GestureDetector(
-                  onTap: _toggleFavorite, // Lorsque l'icône est tapée, basculer les favoris
+                  onTap: _toggleFavorite,
                   child: FutureBuilder<bool>(
                     future: favoritesService.isFavorite(widget.manga.id),
                     builder: (context, snapshot) {
@@ -124,8 +124,8 @@ class _SearchResultCardState extends State<SearchResultCard> {
                       final isFavorite = snapshot.data!;
 
                       return isFavorite
-                          ? Icon(Icons.favorite, color: Colors.red)
-                          : Icon(Icons.favorite, color: Colors.white);
+                          ? const Icon(Icons.favorite, color: Colors.red)
+                          : const Icon(Icons.favorite, color: Colors.white);
                     },
                   ),
                 ),

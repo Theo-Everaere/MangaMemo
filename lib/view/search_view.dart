@@ -35,33 +35,33 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(kMainBgColor),
+      backgroundColor: const Color(kMainBgColor),
       appBar: AppBar(
         title: const Text(
           'Search by Title',
           style: TextStyle(color: Color(kTitleColor)),
         ),
-        backgroundColor: Color(kMainBgColor),
+        backgroundColor: const Color(kMainBgColor),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             TextField(
-              style: TextStyle(color: Color(kTextColor)),
+              style: const TextStyle(color: Color(kTextColor)),
               controller: _controller,
               decoration: InputDecoration(
                 labelText: 'Enter manga title here',
-                labelStyle: TextStyle(color: Color(kTextColor)),
+                labelStyle: const TextStyle(color: Color(kTextColor)),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  color: Color(kTextColor),
+                  icon: const Icon(Icons.search),
+                  color: const Color(kTextColor),
                   onPressed: _searchManga,
                 ),
-                focusedBorder: OutlineInputBorder(
+                focusedBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Color(kTitleColor), width: 2.0),
                 ),
-                border: OutlineInputBorder(
+                border: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),
               ),
@@ -94,13 +94,13 @@ class _SearchViewState extends State<SearchView> {
                   if (mangas.isEmpty) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text(
                           'Enter manga title',
                           style: TextStyle(fontWeight: FontWeight.bold, color: Color(kTitleColor)),
                         ),
-                        const SizedBox(width: 8),
-                        Icon(Icons.arrow_upward, color: Color(kTitleColor),)
+                        SizedBox(width: 8),
+                        Icon(Icons.arrow_upward, color: Color(kTitleColor)),
                       ],
                     );
                   }
@@ -131,4 +131,3 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 }
-

@@ -89,7 +89,7 @@ class _ChaptersCardState extends State<ChaptersCard> {
             itemBuilder: (context, index) {
               final chapter = chapters[index];
               final ValueNotifier<bool> isChapterReadNotifier =
-                  ValueNotifier<bool>(false);
+              ValueNotifier<bool>(false);
 
               chaptersReadService.isChapterRead(chapter.id).then((isRead) {
                 isChapterReadNotifier.value = isRead;
@@ -117,7 +117,7 @@ class _ChaptersCardState extends State<ChaptersCard> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         blurRadius: 5,
-                        offset: const Offset(2, 2),
+                        offset: Offset(2, 2),
                       ),
                     ],
                   ),
@@ -159,21 +159,20 @@ class _ChaptersCardState extends State<ChaptersCard> {
                               isChapterReadNotifier.value = !isRead;
                             },
                             child: AnimatedSwitcher(
-                              duration: Duration(milliseconds: 300),
-                              child:
-                                  isRead
-                                      ? Icon(
-                                        Icons.bookmark,
-                                        color: Colors.green,
-                                        key: ValueKey("read"),
-                                        size: 32,
-                                      )
-                                      : Icon(
-                                        Icons.bookmark_border,
-                                        color: Color(kTextColor),
-                                        key: ValueKey("unread"),
-                                        size: 32,
-                                      ),
+                              duration: const Duration(milliseconds: 300),
+                              child: isRead
+                                  ? Icon(
+                                Icons.bookmark,
+                                color: Colors.green,
+                                key: const ValueKey("read"),
+                                size: 32,
+                              )
+                                  : Icon(
+                                Icons.bookmark_border,
+                                color: const Color(kTextColor),
+                                key: const ValueKey("unread"),
+                                size: 32,
+                              ),
                             ),
                           );
                         },

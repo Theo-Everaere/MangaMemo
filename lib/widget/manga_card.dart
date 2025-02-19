@@ -75,12 +75,12 @@ class _MangaCardState extends State<MangaCard> {
             right: 2,
             child: Container(
               decoration: BoxDecoration(
-                color: Color(kTitleColor),
-                borderRadius: BorderRadius.only(
+                color: const Color(kTitleColor),
+                borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(8),
                   bottomLeft: Radius.circular(8),
                 ),
-                border: Border(
+                border: const Border(
                   left: BorderSide(color: Colors.white, width: 2),
                   bottom: BorderSide(color: Colors.white, width: 2),
                 ),
@@ -88,7 +88,7 @@ class _MangaCardState extends State<MangaCard> {
               child: Padding(
                 padding: const EdgeInsets.all(6),
                 child: GestureDetector(
-                  onTap: _toggleFavorite, // Lorsque l'icône est tapée, basculer les favoris
+                  onTap: _toggleFavorite,
                   child: FutureBuilder<bool>(
                     future: favoritesService.isFavorite(widget.manga.id),
                     builder: (context, snapshot) {
@@ -108,8 +108,8 @@ class _MangaCardState extends State<MangaCard> {
                       final isFavorite = snapshot.data!;
 
                       return isFavorite
-                          ? Icon(Icons.favorite, color: Colors.red)
-                          : Icon(Icons.favorite, color: Colors.white);
+                          ? const Icon(Icons.favorite, color: Colors.red)
+                          : const Icon(Icons.favorite, color: Colors.white);
                     },
                   ),
                 ),

@@ -51,9 +51,15 @@ class _LibraryViewState extends State<LibraryView> with RouteAware {
   Future<void> _loadMangas() async {
     try {
       final latest = await mangaService.fetchLatestUploadedManga();
-      final martialArts = await mangaService.fetchMangasByCategory(kMartialArtsCategoryUrl);
-      final fantasy = await mangaService.fetchMangasByCategory(kFantasyCategoryUrl);
-      final fullColor = await mangaService.fetchMangasByCategory(kFullColorCategoryUrl);
+      final martialArts = await mangaService.fetchMangasByCategory(
+        kMartialArtsCategoryUrl,
+      );
+      final fantasy = await mangaService.fetchMangasByCategory(
+        kFantasyCategoryUrl,
+      );
+      final fullColor = await mangaService.fetchMangasByCategory(
+        kFullColorCategoryUrl,
+      );
 
       if (mounted) {
         setState(() {
@@ -73,7 +79,12 @@ class _LibraryViewState extends State<LibraryView> with RouteAware {
   @override
   Widget build(BuildContext context) {
     if (error != null) {
-      return Center(child: Text('Erreur: $error'));
+      return Center(
+        child: Text(
+          'Error : $error',
+          style: TextStyle(color: Color(kTitleColor)),
+        ),
+      );
     }
 
     return latestMangas.isEmpty &&
