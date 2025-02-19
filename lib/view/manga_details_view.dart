@@ -20,6 +20,7 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
   bool _isExpanded = false;
   late Future<Manga> _mangaFuture;
   late TabController _tabController;
+  bool _isReversed = false;
 
   @override
   void initState() {
@@ -40,6 +41,12 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
       await favoritesService.addToFavorites(widget.mangaId);
     }
     setState(() {});
+  }
+
+  void _toggleChaptersOrder() {
+    setState(() {
+      _isReversed = !_isReversed;
+    });
   }
 
   @override
@@ -240,7 +247,26 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [ChaptersCard(mangaId: manga.id)],
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          _isReversed ? "Latest First: " : "Beginning First: ",
+                          style: const TextStyle(color: Color(kTitleColor), fontSize: 16),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          onPressed: _toggleChaptersOrder,
+                          icon: Icon(
+                            _isReversed ? Icons.arrow_upward_sharp : Icons.arrow_downward_sharp,
+                            color: Color(kTitleColor),
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ChaptersCard(mangaId: manga.id, isReversed: _isReversed,)],
                 ),
               ),
             ],

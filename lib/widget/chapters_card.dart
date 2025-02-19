@@ -7,7 +7,9 @@ import 'package:newscan/view/read_manga_view.dart';
 
 class ChaptersCard extends StatefulWidget {
   final String mangaId;
-  const ChaptersCard({super.key, required this.mangaId});
+  final bool isReversed;
+
+  const ChaptersCard({super.key, required this.mangaId, required this.isReversed});
 
   @override
   State<ChaptersCard> createState() => _ChaptersCardState();
@@ -83,7 +85,7 @@ class _ChaptersCardState extends State<ChaptersCard> {
             );
           }
 
-          final chapters = snapshot.data!;
+          final chapters = widget.isReversed ? snapshot.data!.reversed.toList() : snapshot.data!;
           return ListView.builder(
             itemCount: chapters.length,
             itemBuilder: (context, index) {
