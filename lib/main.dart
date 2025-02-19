@@ -3,9 +3,9 @@ import 'package:newscan/data/constant.dart';
 import 'package:newscan/view/favorites_view.dart';
 import 'package:newscan/view/library_view.dart';
 import 'package:newscan/view/search_view.dart';
+import 'package:newscan/view/splash_view.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'MangaMemo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: const MyHomePage(),
+      home: SplashScreen(), // Définir SplashScreen comme page d'accueil
     );
   }
 }

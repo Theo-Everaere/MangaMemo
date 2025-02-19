@@ -69,7 +69,7 @@ class _ChaptersCardState extends State<ChaptersCard> {
               child: Text(
                 "Failed to load chapters: ${snapshot.error}",
                 style: const TextStyle(
-                  color: Colors.red,
+                  color: Color(kTitleColor),
                   fontWeight: FontWeight.bold,
                 ),
               ),
