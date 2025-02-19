@@ -39,7 +39,9 @@ class _ChaptersCardState extends State<ChaptersCard> {
   }
 
   Future<void> _toggleAsRead(String chapterId) async {
-    final bool currentStatus = await chaptersReadService.isChapterRead(chapterId);
+    final bool currentStatus = await chaptersReadService.isChapterRead(
+      chapterId,
+    );
 
     if (currentStatus) {
       await chaptersReadService.removeChapterAsRead(chapterId);
@@ -86,7 +88,8 @@ class _ChaptersCardState extends State<ChaptersCard> {
             itemCount: chapters.length,
             itemBuilder: (context, index) {
               final chapter = chapters[index];
-              final ValueNotifier<bool> isChapterReadNotifier = ValueNotifier<bool>(false);
+              final ValueNotifier<bool> isChapterReadNotifier =
+                  ValueNotifier<bool>(false);
 
               chaptersReadService.isChapterRead(chapter.id).then((isRead) {
                 isChapterReadNotifier.value = isRead;
@@ -157,9 +160,20 @@ class _ChaptersCardState extends State<ChaptersCard> {
                             },
                             child: AnimatedSwitcher(
                               duration: Duration(milliseconds: 300),
-                              child: isRead
-                                  ? Icon(Icons.bookmark, color: Colors.green, key: ValueKey("read"), size: 32)
-                                  : Icon(Icons.bookmark_border, color: Color(kTextColor), key: ValueKey("unread"), size: 32),
+                              child:
+                                  isRead
+                                      ? Icon(
+                                        Icons.bookmark,
+                                        color: Colors.green,
+                                        key: ValueKey("read"),
+                                        size: 32,
+                                      )
+                                      : Icon(
+                                        Icons.bookmark_border,
+                                        color: Color(kTextColor),
+                                        key: ValueKey("unread"),
+                                        size: 32,
+                                      ),
                             ),
                           );
                         },

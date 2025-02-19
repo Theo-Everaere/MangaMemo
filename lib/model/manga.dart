@@ -8,9 +8,9 @@ class Manga {
 
   Manga({
     required this.id,
-    this.title = "Pas de titre disponible",
-    this.description = "Pas de description",
-    this.status = "Statut inconnu",
+    this.title = "No title available",
+    this.description = "No description",
+    this.status = "Unknown status",
     this.year = 0,
     required this.imageUrl,
   });
@@ -26,14 +26,13 @@ class Manga {
     };
   }
 
-  // Handling missing fields with default values
   factory Manga.fromJson(Map<String, dynamic> json) {
     return Manga(
       id: json['id'] ?? '',
-      title: json['title'] ?? "Title unavailable",
-      description: json['description'] ?? "Description unavailable",
-      status: json['status'] ?? "Status unknown",
-      year: json['year'] ?? "Year unknown",
+      title: json['title'] ?? "No title available",
+      description: json['description'] ?? "No description",
+      status: json['status'] ?? "Unknown status",
+      year: json['year'] ?? 0,
       imageUrl: json['imageUrl'] ?? '',
     );
   }

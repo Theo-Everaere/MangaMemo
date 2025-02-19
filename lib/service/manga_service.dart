@@ -42,20 +42,20 @@ class MangaService {
 
       final titleMap = mangaData['attributes']['title'];
       final title =
-          titleMap is Map && titleMap.isNotEmpty
-              ? titleMap.entries.first.value.toString()
-              : 'Unknown Title';
+      titleMap is Map && titleMap.isNotEmpty
+          ? titleMap.entries.first.value.toString()
+          : 'Unknown Title';
 
       final descriptionMap = mangaData['attributes']['description'];
       final description =
-          descriptionMap != null && descriptionMap is Map
-              ? descriptionMap['en'] ?? 'Description not available'
-              : 'Description not available';
+      descriptionMap != null && descriptionMap is Map
+          ? descriptionMap['en'] ?? 'Description not available'
+          : 'Description not available';
 
       final mangaAttributes = mangaData['attributes'];
 
-      String status = mangaAttributes['status'];
-      int year = mangaAttributes['year'];
+      String status = mangaAttributes['status'] ?? 'Unknown Status'; // Default to 'Unknown Status'
+      int year = mangaAttributes['year'] is int ? mangaAttributes['year'] : 0; // Default to 0 if not an integer
 
       final imageUrl = await _fetchMangaCover(mangaId);
 
@@ -72,6 +72,7 @@ class MangaService {
       throw Exception("Error retrieving manga: $mangaId");
     }
   }
+
 
   Future<List<Manga>> fetchLatestUploadedManga() async {
     final response = await http.get(Uri.parse(kLatestUploadsUrl));

@@ -75,7 +75,12 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
               child: CircularProgressIndicator(color: Color(kTitleColor)),
             );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: Color(kTitleColor)),
+              ),
+            );
           } else if (!snapshot.hasData) {
             return const Center(child: Text('No manga found.'));
           }
@@ -108,15 +113,15 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                       Row(
                         children: [
                           const Padding(
-                            padding: const EdgeInsets.only(
-                              top: 15,
-                              bottom: 15
-                            ),
-                            child: Text('Favorite Status  : ', style: TextStyle(
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Text(
+                              'Favorite Status  : ',
+                              style: TextStyle(
                                 fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(kTextColor),
-                            ),),
+                                fontWeight: FontWeight.bold,
+                                color: Color(kTextColor),
+                              ),
+                            ),
                           ),
                           GestureDetector(
                             onTap: _toggleFavorites,
@@ -195,7 +200,9 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                             ),
                           ),
                           Text(
-                            manga.status,
+                            manga.status.isEmpty
+                                ? 'unknown'
+                                : manga.status, // Handle null or empty status
                             style: const TextStyle(
                               fontSize: 14,
                               color: Color(kTextColor),
@@ -214,7 +221,9 @@ class _MangaDetailsViewState extends State<MangaDetailsView>
                             ),
                           ),
                           Text(
-                            manga.year.toString(),
+                            manga.year == 0
+                                ? 'unknown'
+                                : manga.year.toString(), // Handle unknown year
                             style: const TextStyle(
                               fontSize: 14,
                               color: Color(kTextColor),
