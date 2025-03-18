@@ -1,5 +1,7 @@
 # MangaMemo - Manga Reading Tracker App
 
+⚠ Disclaimer: MangaMemo is a personal project. The application uses the MangaDex API, and users must ensure they have the necessary rights to read a work online.
+
 MangaMemo is a Flutter-based mobile application designed to help users track and manage their manga reading progress. It allows users to search for mangas, view manga details, and store their favorites for quick access. The app leverages the MangaDex API to fetch manga data, such as titles, descriptions, cover images, and categories.
 
 ## Features
